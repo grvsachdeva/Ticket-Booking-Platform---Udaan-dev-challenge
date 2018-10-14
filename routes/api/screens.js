@@ -1,47 +1,7 @@
-const Listing = require('../../db').Listing;
+const Movie = require('../../db').Movie;
+const Seat = require('../../db').Seat;
 const route = require('express').Router();
-const multer = require('multer');
-
-var cloudinary = require('cloudinary');
-cloudinary.config({
-  cloud_name: 'gauravano',
-  api_key: '383633388983891',
-  api_secret: 'MaqAJcecyMtfheySU4glmqVkBmk'
-});
-
-
-// Set The Storage Engine
-const storage = multer.diskStorage({
-    filename: function(req, file, cb){
-        cb(null, new Date().toISOString() + file.originalname);
-    }
-});
-
-// Init Upload
-const upload = multer({
-    storage: storage,
-    limits:{
-        fileSize: 1024 * 1024 * 10
-    },
-    fileFilter: function(req, file, cb){
-        checkFileType(file, cb);
-    }
-});
-
-
-// Check File Type
-function checkFileType(file, cb){
-    // Allowed ext
-    const filetypes = /jpeg|jpg|png|gif/;
-    // Check mime
-    const mimetype = filetypes.test(file.mimetype);
-
-    if(mimetype){
-        return cb(null,true);
-    } else {
-        cb('message: Images Only!');
-    }
-}
+// const multer = require('multer');
 
 route.get('/', (req, res) => {
     Listing.findAll()
@@ -135,34 +95,34 @@ route.get('/:id',(req,res) => {
     });
 });
 
-route.post('/add', upload.single('bookImage'), (req,res, next) => {
-   if(!req.session.user){
-       return res.status(401).send("Please login to create listing.");
-   }
-
-   console.log("Request file: ", req.file);
-   console.log("Request body: ", req.body);
-
-   cloudinary.uploader.upload(req.file.path, function(result) {
-
-     Listing.create({
-         book_name: req.body.book_name,
-         author_name: req.body.author_name,
-         price: req.body.price,
-         condition: req.body.condition,
-         userId: req.session.user.id,
-         book_image_url: result.secure_url,
-         user_name: req.session.user.name
-     }).then((listing) => {
-         res.status(201).send(listing);
-     }).catch((err) => {
-         console.log(err);
-         res.status(500).send({
-             message: "Could not create new listing. Sorry :("
-         })
-     })
-})
-})
+// route.post('/add', upload.single('bookImage'), (req,res, next) => {
+//    if(!req.session.user){
+//        return res.status(401).send("Please login to create listing.");
+//    }
+//
+//    console.log("Request file: ", req.file);
+//    console.log("Request body: ", req.body);
+//
+//    cloudinary.uploader.upload(req.file.path, function(result) {
+//
+//      Listing.create({
+//          book_name: req.body.book_name,
+//          author_name: req.body.author_name,
+//          price: req.body.price,
+//          condition: req.body.condition,
+//          userId: req.session.user.id,
+//          book_image_url: result.secure_url,
+//          user_name: req.session.user.name
+//      }).then((listing) => {
+//          res.status(201).send(listing);
+//      }).catch((err) => {
+//          console.log(err);
+//          res.status(500).send({
+//              message: "Could not create new listing. Sorry :("
+//          })
+//      })
+// })
+// })
 
 route.get('/delete/:id', (req,res) => {
 
