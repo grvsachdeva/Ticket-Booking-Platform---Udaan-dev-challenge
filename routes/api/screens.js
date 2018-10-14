@@ -4,19 +4,6 @@ const route = require('express').Router();
 
 
 route.post('/', (req, res) => {
-    // Listing.findAll()
-    //     .then((listings) => {
-    //         res.status(200).send(listings);
-    //     })
-    //     .catch((err) => {
-    //         res.status(500).send({
-    //             message: "Could not fetch book listings. Sorry :( "
-    //         })
-    //     })
-
-    console.log(req.body);
-    console.log(req.body.name);
-
     var seatA_info = req.body.seatInfo.A;
     var seatB_info = req.body.seatInfo.B;
     var seatD_info = req.body.seatInfo.D;
@@ -28,44 +15,42 @@ route.post('/', (req, res) => {
         seats_B: seatB_info.numberOfSeats,
         seats_D: seatD_info.numberOfSeats
     }).then((movie) => {
-      for(var i of rows){
-        var seats = i.aisleSeats;
-        var i=0;
-        for(var j of seats){
 
+      var i=0;
+      var row_name;
 
-          var row_name;
-          if(i == 0){
-            row_name = "A";
-          }else if(i == 1){
-            row_name = "B";
-          }else{
-            row_name = "D";
-          }
+      for(var row of rows){
+        console.log(row);
+        var seats = row;
+        var aisle_seats = row.aisleSeats;
+        if(i === 0){
+          row_name = "A";
+        }else if(i === 1){
+          row_name = "B";
+        }else if(i == 2){
+          row_name = "D";
+        }
 
+        console.log(seats.numberOfSeats);
+
+        for(var j = 1; j<= seats.numberOfSeats; j++){
+          var reserve = aisle_seats.includes(j);
 
           Seat.create({
               movie_id: movie.id,
               seat_num: j,
-              row_name: row_name
+              row_name: row_name,
+              is_aisle: reserve
           }).then((seat) => {
-              
-          }).catch((err) => {
-              console.log(err);
-              res.status(500).send({
-                  message: "Could not add new aisle seat. Sorry :("
-              })
-          })
 
+          })
         }
-        i++;
+        i = i + 1;
       }
 
-        res.status(200).send({
-          message: "Success :)"
-        });
-
-
+      res.status(200).send({
+        message: "Success :)"
+      });
     }).catch((err) => {
         console.log(err);
         res.status(500).send({
@@ -75,27 +60,74 @@ route.post('/', (req, res) => {
 
 });
 
-route.get('/user', (req, res) => {
+route.post('/:screen_name/reserve', (req, res) => {
+  var movie_name = req.params.screen_name;
+  var movie_id;
 
-    if(!req.session.user){
-        return res.status(401).send({
-            message: "Please login to view your listings."
-        });
+  // Movie.find({
+  //     where: {
+  //         name: movie_name
+  //     }
+  // }).then((movie) => {
+  //     if(movie){
+  //          movie_id  = movie.id;
+  //     }else{
+  //         return res.status(500).send({
+  //           message: "No movie with such name exist!"
+  //     });
+  // }}).catch((err) => {
+  //     return res.status(500).send({
+  //         message: "Could not fetch listings. Sorry :( "
+  //     });
+  // });
+
+  var seatA_res = req.body.seats.A;
+  var seatB_res = req.body.seats.B;
+  var seatD_res = req.body.seats.D;
+
+  console.log(seatA_res," ",seatB_res," ",seatD_res);
+
+  for(var i=0; i<3;i++){
+    if(i ==0 && seatA_res != "undefined"){
+      reserve_seat(movie_id, "A",seatA_res);
+    }else if(i == 1 && seatB_res != "undefined"){
+      reserve_seat(movie_id, "B",seatB_res);
+    }else if(i == 2 && seatD_res != "undefined"){
+      reserve_seat(movie_id, "D",seatD_res);
+    }else{
+      return res.status(500).send({
+          message: "Invalid request!"
+      });
     }
 
-      Listing.findAll({
-        where: {
-          userId: req.session.user.id
-        }
-      }).then((listings) => {
-            res.status(200).send(listings);
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: "Could not fetch book listings. Sorry :( "
-            })
-        })
+  }
+
 });
+
+function reserve_seat(movie_id, row_name, seats){
+  console.log(movie_id, row_name, seats);
+  for(var seat of seats){
+    Seat.find({
+        where: {
+            movie_id: movie_id,
+            row_name: row_name,
+            seat_num: seat
+        }
+    }).then((seat_status) => {
+        if(seat_status){
+
+        }else{
+            return res.status(500).send({
+              message: "No movie with such name exist!"
+        });
+    }}).catch((err) => {
+        return res.status(500).send({
+            message: "Could not fetch listings. Sorry :( "
+        });
+    });
+  }
+}
+
 
 
 route.get('/filter', (req, res) => {

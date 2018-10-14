@@ -60,6 +60,14 @@ const Seat = db.define('aisle_seats', {
     row_name: {
       type: Sequelize.STRING,
       allowNull: false
+    },
+    is_aisle: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    },
+    is_reserved: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
     }
 });
 
