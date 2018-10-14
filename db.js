@@ -1,25 +1,25 @@
-//
-//
-// const Sequelize = require('sequelize');
-//
-// const db = new Sequelize('heroku_7359ed09036ac80', 'b6360eedf8117d', '7c0eadb3', {
-//     host: 'us-cdbr-iron-east-04.cleardb.net',
-//     dialect: 'mysql',
-//     pool:{
-//         min: 0,
-//         max: 5
-//     }
-// });
+// -------- Production heroku ----------
+const Sequelize = require('sequelize');
 
-const Sequelize = require('sequelize')
- const db = new Sequelize('ticketing', 'gaurav_ticketing', 'Ticketing 1', {
-    host: 'localhost',
+const db = new Sequelize('heroku_d806c6567391c01', 'b0b3a0a85c2dbc', '28875add', {
+    host: 'us-cdbr-iron-east-01.cleardb.net',
     dialect: 'mysql',
-    pool: {
+    pool:{
         min: 0,
-        max: 5,
+        max: 5
     }
-})
+});
+
+// -------- Development --------
+// const Sequelize = require('sequelize')
+//  const db = new Sequelize('ticketing', 'gaurav_ticketing', 'Ticketing 1', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+//     pool: {
+//         min: 0,
+//         max: 5,
+//     }
+// })
 
 
 const Movie = db.define('movies', {
