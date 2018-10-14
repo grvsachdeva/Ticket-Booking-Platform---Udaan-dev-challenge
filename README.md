@@ -13,8 +13,13 @@ NodeJS with Express is used as framework for the development of the application.
 
 ### Installation
 1. In the console, download a copy of the repo by running `git clone https://github.com/gauravano/Ticket-Booking-Platform---Udaan-dev-challenge.git`.
+
 2. Enter the new Ticket-Booking-Platform---Udaan-dev-challenge directory with `cd Ticket-Booking-Platform---Udaan-dev-challenge`.
-3.[Optional] For syncing the MySql database locally, uncomment these lines https://github.com/gauravano/Ticket-Booking-Platform---Udaan-dev-challenge/blob/e408e6f8dec13bdc16885d4b85c41bc558a08e33/db.js#L14-L22 and comment these lines https://github.com/gauravano/Ticket-Booking-Platform---Udaan-dev-challenge/blob/e408e6f8dec13bdc16885d4b85c41bc558a08e33/db.js#L2-L11 and then copy these lines below lines after running `sudo mysql` in terminal:
+
+3.[Optional] For syncing the MySql database locally:
+  1. Uncomment these lines https://github.com/gauravano/Ticket-Booking-Platform---Udaan-dev-   challenge/blob/e408e6f8dec13bdc16885d4b85c41bc558a08e33/db.js#L14-L22 
+  2. Comment these lines https://github.com/gauravano/Ticket-Booking-Platform---Udaan-dev- challenge/blob/e408e6f8dec13bdc16885d4b85c41bc558a08e33/db.js#L2-L11
+  3. Copy the below lines in terminal after running `sudo mysql` in terminal:
 
 ```sql
  create database ticketing;
