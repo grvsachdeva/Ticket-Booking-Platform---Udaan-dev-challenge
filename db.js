@@ -49,10 +49,9 @@ const Seat = db.define('aisle_seats', {
        autoIncrement: true,
        primaryKey: true
    },
-   name: {
-       type: Sequelize.STRING,
-       allowNull: false,
-       unique: true
+   movie_id: {
+       type: Sequelize.INTEGER,
+       allowNull: false
    },
     seat_num: {
        type: Sequelize.INTEGER,
@@ -63,8 +62,6 @@ const Seat = db.define('aisle_seats', {
       allowNull: false
     }
 });
-
-Seat.belongsTo(Movie);
 
 db.sync().then(() => console.log("Database has been synced! "))
          .catch((err) => console.log("Error creating database! "));

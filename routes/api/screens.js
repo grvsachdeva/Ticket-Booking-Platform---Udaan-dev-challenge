@@ -1,18 +1,78 @@
 const Movie = require('../../db').Movie;
 const Seat = require('../../db').Seat;
 const route = require('express').Router();
-// const multer = require('multer');
 
-route.get('/', (req, res) => {
-    Listing.findAll()
-        .then((listings) => {
-            res.status(200).send(listings);
+
+route.post('/', (req, res) => {
+    // Listing.findAll()
+    //     .then((listings) => {
+    //         res.status(200).send(listings);
+    //     })
+    //     .catch((err) => {
+    //         res.status(500).send({
+    //             message: "Could not fetch book listings. Sorry :( "
+    //         })
+    //     })
+
+    console.log(req.body);
+    console.log(req.body.name);
+
+    var seatA_info = req.body.seatInfo.A;
+    var seatB_info = req.body.seatInfo.B;
+    var seatD_info = req.body.seatInfo.D;
+    var rows = [seatA_info, seatB_info, seatD_info];
+
+    Movie.create({
+        name: req.body.name,
+        seats_A: seatA_info.numberOfSeats,
+        seats_B: seatB_info.numberOfSeats,
+        seats_D: seatD_info.numberOfSeats
+    }).then((movie) => {
+      for(var i of rows){
+        var seats = i.aisleSeats;
+        var i=0;
+        for(var j of seats){
+
+
+          var row_name;
+          if(i == 0){
+            row_name = "A";
+          }else if(i == 1){
+            row_name = "B";
+          }else{
+            row_name = "D";
+          }
+
+
+          Seat.create({
+              movie_id: movie.id,
+              seat_num: j,
+              row_name: row_name
+          }).then((seat) => {
+              
+          }).catch((err) => {
+              console.log(err);
+              res.status(500).send({
+                  message: "Could not add new aisle seat. Sorry :("
+              })
+          })
+
+        }
+        i++;
+      }
+
+        res.status(200).send({
+          message: "Success :)"
+        });
+
+
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({
+            message: "Could not create new movie screen. Sorry :("
         })
-        .catch((err) => {
-            res.status(500).send({
-                message: "Could not fetch book listings. Sorry :( "
-            })
-        })
+    })
+
 });
 
 route.get('/user', (req, res) => {
@@ -122,7 +182,7 @@ route.get('/:id',(req,res) => {
 //          })
 //      })
 // })
-// })
+// // })
 
 route.get('/delete/:id', (req,res) => {
 

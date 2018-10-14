@@ -2,14 +2,12 @@ const express = require('express');
 
 const app = express();
 
-app.use('/', express.static('public'));
-app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.use('/api', require('./routes/api').route);
-app.set('port', (process.env.PORT || 4000));
-//
+app.use('/', require('./routes/api').route);
+app.set('port', (process.env.PORT || 9090));
+
 // app.use('/listings/:id',express.static('public'));
 // app.use('/listings/add',express.static('public'));
 // app.use('/messages',express.static('public'));
